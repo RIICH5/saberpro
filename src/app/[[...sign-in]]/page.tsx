@@ -205,8 +205,8 @@ const LoginPage = () => {
         <div className="absolute inset-0 bg-black/50 flex flex-col justify-end p-8">
           <blockquote className="space-y-2 text-white/90">
             <p className="text-lg font-medium">
-              "La educación es el arma más poderosa que puedes usar para cambiar
-              el mundo."
+              &quot;La educación es el arma más poderosa que puedes usar para
+              cambiar el mundo.&quot;
             </p>
             <footer className="text-sm text-white/70">— Nelson Mandela</footer>
           </blockquote>
