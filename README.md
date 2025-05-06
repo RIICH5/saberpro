@@ -15,14 +15,27 @@ Bienvenido a **SaberPro**, una plataforma integral para la gestión escolar, dis
 ## Instalación
 
 ```sh
-git clone https://github.com/tu-usuario/full-stack-school.git
-cd full-stack-school
+git clone https://github.com:RIICH5/saberpro.git
+cd saberpro
 npm install
 ```
 
 Configura las variables de entorno:
 
 - Copia el archivo `.env.example` a `.env` y agrega tus credenciales de base de datos y Clerk.
+
+### Ejemplo de archivo `.env.example`
+
+Asegúrate de que tu archivo `.env.example` contenga las siguientes variables (ajusta según tus necesidades):
+
+```env
+DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/saberpro
+CLERK_PUBLISHABLE_KEY=tu_clave_publishable
+CLERK_SECRET_KEY=tu_clave_secreta
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=tu_clave_publishable
+```
+
+> **Nota:** No compartas tus claves reales en repositorios públicos.
 
 Ejecuta las migraciones de la base de datos:
 
