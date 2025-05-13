@@ -152,17 +152,17 @@ const ClassForm = ({
 
         {/* Grade Selection */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-gray-600">Clase</label>
+          <label className="text-xs text-gray-600">Semestre</label>
           <select
             {...register("gradeId")}
             className={`w-full p-3 border ${
               errors.gradeId ? "border-red-300 bg-red-50" : "border-gray-300"
             } rounded-md text-sm`}
           >
-            <option value="">Seleccionar Clase</option>
+            <option value="">Seleccionar Semestre</option>
             {grades.map((grade: GradeType) => (
               <option key={grade.id} value={grade.id.toString()}>
-                Clase {grade.level}
+                Semestre {grade.level}
               </option>
             ))}
           </select>

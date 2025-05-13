@@ -118,7 +118,7 @@ export const createClass = async (
       return {
         success: false,
         error: true,
-        message: "La clase seleccionado no existe.",
+        message: "El semestre seleccionado no existe.",
       };
     }
 

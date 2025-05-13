@@ -71,7 +71,7 @@ const ClassListClientWrapper = ({
       sortable: true,
     },
     {
-      header: "Clase",
+      header: "Semestre",
       accessor: "grade",
       className: "hidden md:table-cell",
     },
@@ -341,7 +341,7 @@ const ClassListClientWrapper = ({
 
               {/* Grades filter */}
               <div>
-                <h4 className="text-sm font-medium mb-3">Clases</h4>
+                <h4 className="text-sm font-medium mb-3">Semestres</h4>
                 <div className="flex flex-wrap gap-2">
                   {grades.map((grade) => (
                     <button
@@ -353,7 +353,7 @@ const ClassListClientWrapper = ({
                           : "bg-white text-gray-500 border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      Clase {grade.level}
+                      Semestre {grade.level}
                     </button>
                   ))}
                 </div>
@@ -395,7 +395,7 @@ const ClassListClientWrapper = ({
                         key={`selected-grade-${id}`}
                         className="flex items-center bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-md"
                       >
-                        Clase {grade.level}
+                        Semestre {grade.level}
                         <button
                           onClick={() => toggleGrade(id)}
                           className="ml-1 text-gray-400 hover:text-red-500"

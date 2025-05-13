@@ -606,7 +606,7 @@ const StudentForm = ({
 
             {/* Grade */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600">Clase</label>
+              <label className="text-xs text-gray-600">Semestre</label>
               <select
                 {...register("gradeId")}
                 className={`w-full p-3 border ${
@@ -616,7 +616,7 @@ const StudentForm = ({
                 } rounded-md text-sm`}
                 defaultValue={data?.gradeId as any}
               >
-                <option value="">Seleccionar Clase</option>
+                <option value="">Seleccionar Semestre</option>
                 {grades.map((grade: any) => (
                   <option key={grade.id} value={grade.id}>
                     {grade.level}

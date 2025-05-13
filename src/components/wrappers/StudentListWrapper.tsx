@@ -83,7 +83,7 @@ const StudentListClientWrapper = ({
       className: "hidden md:table-cell",
     },
     {
-      header: "Clase",
+      header: "Semestre",
       accessor: "grade",
       className: "hidden md:table-cell",
     },
@@ -382,7 +382,7 @@ const StudentListClientWrapper = ({
                 <summary className="text-sm font-medium mb-3 flex items-center justify-between cursor-pointer list-none">
                   <div className="flex items-center gap-2">
                     <BookOpen size={14} />
-                    <span>Clases</span>
+                    <span>Semestre</span>
                   </div>
                   <ChevronDown
                     size={14}
@@ -402,13 +402,13 @@ const StudentListClientWrapper = ({
                               : "bg-white text-gray-500 border-gray-200 hover:border-gray-300"
                           }`}
                         >
-                          Clases {grade.level}
+                          Semestres {grade.level}
                         </button>
                       ))}
                     </div>
                   ) : (
                     <p className="text-xs text-gray-400 italic">
-                      No hay clases disponibles
+                      No hay semestres disponibles
                     </p>
                   )}
                 </div>
@@ -446,7 +446,7 @@ const StudentListClientWrapper = ({
                         key={`selected-grade-${id}`}
                         className="flex items-center bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-md"
                       >
-                        Clase {grade.level}
+                        Semestre {grade.level}
                         <button
                           onClick={() => toggleGrade(id)}
                           className="ml-1 text-gray-400 hover:text-red-500"

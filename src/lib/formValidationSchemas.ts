@@ -85,7 +85,9 @@ export const studentSchema = z.object({
     message: "¡La fecha de nacimiento es obligatoria!",
   }),
   sex: z.enum(["MALE", "FEMALE"], { message: "¡El sexo es obligatorio!" }),
-  gradeId: z.coerce.number().min(1, { message: "¡La clase es obligatorio!" }),
+  gradeId: z.coerce
+    .number()
+    .min(1, { message: "¡El semestre es obligatorio!" }),
   classId: z.coerce.number().min(1, { message: "¡La clase es obligatoria!" }),
   parentId: z.string().optional(),
 });
