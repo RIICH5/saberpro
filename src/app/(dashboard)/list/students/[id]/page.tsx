@@ -41,7 +41,7 @@ const SingleStudentPage = async ({
         {/* TOP */}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* USER INFO CARD */}
-          <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
+          <div className="bg-sky-200 py-6 px-4 rounded-md flex-1 flex gap-4">
             <div className="w-1/3">
               {student.img ? (
                 <Image

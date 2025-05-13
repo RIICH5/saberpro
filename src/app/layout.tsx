@@ -14,6 +14,18 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "SaberPro",
   description: "La Nueva Forma de Aprender",
+  openGraph: {
+    title: "SaberPro",
+    description: "La Nueva Forma de Aprender",
+    url: "https://saberpro.vercel.app",
+    siteName: "SaberPro",
+    images: [
+      {
+        url: "https://saberpro.vercel.app/branding/opengraph.png",
+        alt: "SaberPro",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
