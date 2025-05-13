@@ -395,7 +395,7 @@ const ClassListClientWrapper = ({
                         key={`selected-grade-${id}`}
                         className="flex items-center bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-md"
                       >
-                        Grado {grade.level}
+                        Clase {grade.level}
                         <button
                           onClick={() => toggleGrade(id)}
                           className="ml-1 text-gray-400 hover:text-red-500"
