@@ -118,7 +118,7 @@ export const createClass = async (
       return {
         success: false,
         error: true,
-        message: "El grado seleccionado no existe.",
+        message: "La clase seleccionado no existe.",
       };
     }
 

@@ -134,7 +134,7 @@ const SingleStudentPage = async ({
                 <h1 className="text-xl font-semibold">
                   {student.class.name.charAt(0)}°
                 </h1>
-                <span className="text-sm text-gray-400">Grado</span>
+                <span className="text-sm text-gray-400">Clase</span>
               </div>
             </div>
             {/* CARD */}

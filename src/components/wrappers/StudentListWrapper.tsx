@@ -83,7 +83,7 @@ const StudentListClientWrapper = ({
       className: "hidden md:table-cell",
     },
     {
-      header: "Grado",
+      header: "Clase",
       accessor: "grade",
       className: "hidden md:table-cell",
     },
@@ -240,7 +240,7 @@ const StudentListClientWrapper = ({
         </div>
       </td>
       <td className="hidden md:table-cell">{item.username}</td>
-      <td className="hidden md:table-cell">Grado {item.grade.level}</td>
+      <td className="hidden md:table-cell">Clase {item.grade.level}</td>
       <td className="hidden md:table-cell">{item.class.name}</td>
       <td className="hidden lg:table-cell">{item.phone || "-"}</td>
       <td className="hidden lg:table-cell">{item.address}</td>
@@ -382,7 +382,7 @@ const StudentListClientWrapper = ({
                 <summary className="text-sm font-medium mb-3 flex items-center justify-between cursor-pointer list-none">
                   <div className="flex items-center gap-2">
                     <BookOpen size={14} />
-                    <span>Grados</span>
+                    <span>Clases</span>
                   </div>
                   <ChevronDown
                     size={14}
@@ -402,13 +402,13 @@ const StudentListClientWrapper = ({
                               : "bg-white text-gray-500 border-gray-200 hover:border-gray-300"
                           }`}
                         >
-                          Grado {grade.level}
+                          Clases {grade.level}
                         </button>
                       ))}
                     </div>
                   ) : (
                     <p className="text-xs text-gray-400 italic">
-                      No hay grados disponibles
+                      No hay clases disponibles
                     </p>
                   )}
                 </div>
@@ -446,7 +446,7 @@ const StudentListClientWrapper = ({
                         key={`selected-grade-${id}`}
                         className="flex items-center bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-md"
                       >
-                        Grado {grade.level}
+                        Clase {grade.level}
                         <button
                           onClick={() => toggleGrade(id)}
                           className="ml-1 text-gray-400 hover:text-red-500"

@@ -18,7 +18,7 @@ export const classSchema = z.object({
     .min(1, { message: "La capacidad debe ser al menos 1" })
     .max(100, { message: "La capacidad máxima es 100" }),
   supervisorId: z.string().optional().nullable().or(z.literal("")),
-  gradeId: z.string().min(1, { message: "Debe seleccionar un grado" }),
+  gradeId: z.string().min(1, { message: "Debe seleccionar una clase" }),
 });
 
 export type ClassSchema = z.infer<typeof classSchema>;
@@ -85,7 +85,7 @@ export const studentSchema = z.object({
     message: "¡La fecha de nacimiento es obligatoria!",
   }),
   sex: z.enum(["MALE", "FEMALE"], { message: "¡El sexo es obligatorio!" }),
-  gradeId: z.coerce.number().min(1, { message: "¡El grado es obligatorio!" }),
+  gradeId: z.coerce.number().min(1, { message: "¡La clase es obligatorio!" }),
   classId: z.coerce.number().min(1, { message: "¡La clase es obligatoria!" }),
   parentId: z.string().optional(),
 });
