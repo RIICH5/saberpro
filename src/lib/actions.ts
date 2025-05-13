@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  ClassSchema,
   ExamSchema,
   StudentSchema,
   SubjectSchema,
@@ -10,6 +9,7 @@ import {
 import prisma from "./prisma";
 import { clerkClient } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { ClassSchema } from "./formValidationSchemas";
 
 // Define the state type that matches what we return from our actions
 type ActionState = {
@@ -89,60 +89,191 @@ export const deleteSubject = async (
   }
 };
 
+// --- CREATE CLASS ---
 export const createClass = async (
   currentState: ActionState,
   data: ClassSchema
 ) => {
   try {
+    // Verificar si ya existe una clase con el mismo nombre
+    const existingClass = await prisma.class.findUnique({
+      where: { name: data.name },
+    });
+
+    if (existingClass) {
+      return {
+        success: false,
+        error: true,
+        message:
+          "Ya existe una clase con este nombre. Por favor, elija otro nombre.",
+      };
+    }
+
+    // Verificar que el grado exista
+    const grade = await prisma.grade.findUnique({
+      where: { id: Number(data.gradeId) },
+    });
+
+    if (!grade) {
+      return {
+        success: false,
+        error: true,
+        message: "El grado seleccionado no existe.",
+      };
+    }
+
+    // Verificar que el supervisor exista (si se proporciona)
+    if (data.supervisorId) {
+      const supervisor = await prisma.teacher.findUnique({
+        where: { id: data.supervisorId },
+      });
+
+      if (!supervisor) {
+        return {
+          success: false,
+          error: true,
+          message: "El supervisor seleccionado no existe.",
+        };
+      }
+    }
+
+    // Crear la clase
     await prisma.class.create({
-      data,
+      data: {
+        name: data.name,
+        capacity: data.capacity,
+        supervisorId: data.supervisorId || null,
+        gradeId: Number(data.gradeId),
+      },
     });
 
     revalidatePath("/list/classes");
     return { success: true, error: false };
   } catch (err) {
-    console.log(err);
-    return { success: false, error: true };
+    console.error("Error al crear la clase:", err);
+    return {
+      success: false,
+      error: true,
+      message: "Error al crear la clase. Por favor, inténtalo de nuevo.",
+    };
   }
 };
 
+// --- UPDATE CLASS ---
 export const updateClass = async (
   currentState: ActionState,
   data: ClassSchema
 ) => {
   try {
-    await prisma.class.update({
+    if (!data.id) {
+      return {
+        success: false,
+        error: true,
+        message: "ID de clase no proporcionado",
+      };
+    }
+
+    // Verificar si existe otra clase con el mismo nombre (excluyendo la actual)
+    const existingClass = await prisma.class.findFirst({
       where: {
-        id: data.id,
+        name: data.name,
+        NOT: { id: data.id },
       },
-      data,
+    });
+
+    if (existingClass) {
+      return {
+        success: false,
+        error: true,
+        message:
+          "Ya existe otra clase con este nombre. Por favor, elija otro nombre.",
+      };
+    }
+
+    // Verificar la cantidad de estudiantes actual vs. la nueva capacidad
+    const currentStudentCount = await prisma.student.count({
+      where: { classId: data.id },
+    });
+
+    if (currentStudentCount > data.capacity) {
+      return {
+        success: false,
+        error: true,
+        message: `No se puede reducir la capacidad a ${data.capacity} porque hay ${currentStudentCount} estudiantes asignados a esta clase.`,
+      };
+    }
+
+    // Actualizar la clase
+    await prisma.class.update({
+      where: { id: data.id },
+      data: {
+        name: data.name,
+        capacity: data.capacity,
+        supervisorId: data.supervisorId || null,
+        gradeId: Number(data.gradeId),
+      },
     });
 
     revalidatePath("/list/classes");
     return { success: true, error: false };
   } catch (err) {
-    console.log(err);
-    return { success: false, error: true };
+    console.error("Error al actualizar la clase:", err);
+    return {
+      success: false,
+      error: true,
+      message: "Error al actualizar la clase. Por favor, inténtalo de nuevo.",
+    };
   }
 };
 
+// --- DELETE CLASS ---
 export const deleteClass = async (
   currentState: ActionState,
   data: FormData
 ) => {
   const id = data.get("id") as string;
+
   try {
+    const classId = parseInt(id);
+
+    // Verificar si hay estudiantes asociados a esta clase
+    const studentsCount = await prisma.student.count({
+      where: { classId },
+    });
+
+    if (studentsCount > 0) {
+      return {
+        success: false,
+        error: true,
+        message: `No se puede eliminar esta clase porque hay ${studentsCount} estudiantes asignados a ella. Reasigna o elimina los estudiantes primero.`,
+      };
+    }
+
+    // Si no hay estudiantes, podemos eliminar la clase
     await prisma.class.delete({
-      where: {
-        id: parseInt(id),
-      },
+      where: { id: classId },
     });
 
     revalidatePath("/list/classes");
     return { success: true, error: false };
-  } catch (err) {
-    console.log(err);
-    return { success: false, error: true };
+  } catch (err: any) {
+    console.error("Error al eliminar la clase:", err);
+
+    // Manejar específicamente el error de restricción de clave foránea
+    if (err?.code === "P2003") {
+      return {
+        success: false,
+        error: true,
+        message:
+          "No se puede eliminar esta clase porque hay registros relacionados. Asegúrate de que no haya estudiantes, lecciones u otros datos asociados a esta clase.",
+      };
+    }
+
+    return {
+      success: false,
+      error: true,
+      message: "Error al eliminar la clase. Por favor, inténtalo de nuevo.",
+    };
   }
 };
 

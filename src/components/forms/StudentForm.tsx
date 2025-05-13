@@ -713,32 +713,6 @@ const StudentForm = ({
               )}
             </div>
 
-            {/* Parent */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600">Padre</label>
-              <select
-                {...register("parentId")}
-                className={`w-full p-3 border ${
-                  errors.parentId
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-300"
-                } rounded-md text-sm`}
-                defaultValue={data?.parentId as any}
-              >
-                <option value="">Seleccionar padre</option>
-                {parents.map((parent: any) => (
-                  <option key={parent.id} value={parent.id}>
-                    {parent.name} {parent.surname}
-                  </option>
-                ))}
-              </select>
-              {errors.parentId?.message && (
-                <p className="text-xs text-red-500">
-                  {errors.parentId.message.toString()}
-                </p>
-              )}
-            </div>
-
             {/* Birthday */}
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-600">

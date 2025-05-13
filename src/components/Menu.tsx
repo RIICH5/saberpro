@@ -51,7 +51,7 @@ const Menu = async () => {
           icon: "shapes",
           label: "Clases",
           href: "/list/classes",
-          visible: ["admin", "teacher"],
+          visible: ["admin"],
         },
         {
           icon: "bookText",
@@ -73,7 +73,7 @@ const Menu = async () => {
         },
         {
           icon: "barChart2",
-          label: "Resultados",
+          label: "Calificaciones",
           href: "/list/results",
           visible: ["admin", "teacher", "student", "parent"],
         },

@@ -11,6 +11,13 @@ import dynamic from "next/dynamic";
 import { Plus, Pencil, Trash2, X, AlertTriangle } from "lucide-react";
 import { Dispatch, SetStateAction, useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+import { deleteParent } from "@/lib/parentActions";
+import { deleteLesson } from "@/lib/lessonActions";
+import { deleteResult } from "@/lib/resultActions";
+import { deleteAssignment } from "@/lib/assignmentActions";
+import { deleteAttendance } from "@/lib/attendanceActions";
+import { deleteEvent } from "@/lib/eventActions";
+import { deleteAnnouncement } from "@/lib/announcementActions";
 
 interface FormModalProps {
   table:
@@ -50,16 +57,25 @@ const deleteActionMap = {
   teacher: deleteTeacher,
   student: deleteStudent,
   exam: deleteExam,
-  parent: deleteSubject,
-  lesson: deleteSubject,
-  assignment: deleteSubject,
-  result: deleteSubject,
-  attendance: deleteSubject,
-  event: deleteSubject,
-  announcement: deleteSubject,
+  parent: deleteParent,
+  lesson: deleteLesson,
+  assignment: deleteAssignment,
+  result: deleteResult,
+  attendance: deleteAttendance,
+  event: deleteEvent,
+  announcement: deleteAnnouncement,
 };
 
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
+  loading: () => (
+    <div className="flex items-center justify-center p-4">
+      <div className="animate-spin w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+      <span className="ml-2">Cargando...</span>
+    </div>
+  ),
+});
+
+const ParentForm = dynamic(() => import("./forms/ParentForm"), {
   loading: () => (
     <div className="flex items-center justify-center p-4">
       <div className="animate-spin w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
@@ -96,6 +112,51 @@ const ClassForm = dynamic(() => import("./forms/ClassForm"), {
 });
 
 const ExamForm = dynamic(() => import("./forms/ExamForm"), {
+  loading: () => (
+    <div className="flex items-center justify-center p-4">
+      <div className="animate-spin w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+      <span className="ml-2">Cargando...</span>
+    </div>
+  ),
+});
+
+const LessonForm = dynamic(() => import("./forms/LessonForm"), {
+  loading: () => (
+    <div className="flex items-center justify-center p-4">
+      <div className="animate-spin w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+      <span className="ml-2">Cargando...</span>
+    </div>
+  ),
+});
+
+const AssignmentForm = dynamic(() => import("./forms/AssignmentForm"), {
+  loading: () => (
+    <div className="flex items-center justify-center p-4">
+      <div className="animate-spin w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+      <span className="ml-2">Cargando...</span>
+    </div>
+  ),
+});
+
+const ResultForm = dynamic(() => import("./forms/ResultForm"), {
+  loading: () => (
+    <div className="flex items-center justify-center p-4">
+      <div className="animate-spin w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+      <span className="ml-2">Cargando...</span>
+    </div>
+  ),
+});
+
+const AnnouncementForm = dynamic(() => import("./forms/AnnouncementForm"), {
+  loading: () => (
+    <div className="flex items-center justify-center p-4">
+      <div className="animate-spin w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+      <span className="ml-2">Cargando...</span>
+    </div>
+  ),
+});
+
+const EventForm = dynamic(() => import("./forms/EventForm"), {
   loading: () => (
     <div className="flex items-center justify-center p-4">
       <div className="animate-spin w-6 h-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
@@ -151,6 +212,60 @@ const forms: {
   ),
   exam: (setOpen, type, data, relatedData, onComplete) => (
     <ExamForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+      onComplete={onComplete}
+    />
+  ),
+  parent: (setOpen, type, data, relatedData, onComplete) => (
+    <ParentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+      onComplete={onComplete}
+    />
+  ),
+  lesson: (setOpen, type, data, relatedData, onComplete) => (
+    <LessonForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+      onComplete={onComplete}
+    />
+  ),
+  assignment: (setOpen, type, data, relatedData, onComplete) => (
+    <AssignmentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+      onComplete={onComplete}
+    />
+  ),
+  result: (setOpen, type, data, relatedData, onComplete) => (
+    <ResultForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+      onComplete={onComplete}
+    />
+  ),
+  event: (setOpen, type, data, relatedData, onComplete) => (
+    <EventForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+      onComplete={onComplete}
+    />
+  ),
+  announcement: (setOpen, type, data, relatedData, onComplete) => (
+    <AnnouncementForm
       type={type}
       data={data}
       setOpen={setOpen}

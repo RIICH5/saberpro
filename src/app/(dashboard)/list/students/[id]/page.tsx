@@ -202,7 +202,7 @@ const SingleStudentPage = async ({
               className="p-3 rounded-md hover:underline bg-gray-50 hover:bg-gray-100 transition duration-200 ease-in-out"
               href={`/list/results?studentId=${student.id}`}
             >
-              Resultados
+              Calificaciones
             </Link>
           </div>
         </div>

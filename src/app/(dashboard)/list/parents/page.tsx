@@ -1,7 +1,5 @@
 import ParentListClientWrapper from "@/components/wrappers/ParentListClientWrapper";
 import prisma from "@/lib/prisma";
-import { ITEM_PER_PAGE } from "@/lib/settings";
-import { Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 
 type ParentList = {
@@ -23,46 +21,35 @@ const ParentListPage = async ({
   const { sessionClaims } = auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
-  const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page) : 1;
-
-  // Build Prisma query from search params
-  const query: Prisma.ParentWhereInput = {};
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "search":
-            query.name = { contains: value, mode: "insensitive" };
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-
-  // Fetch paginated parents and total count
-  const [data, count] = await prisma.$transaction([
-    prisma.parent.findMany({
-      where: query,
-      include: {
-        students: {
-          select: { id: true, name: true },
-        },
+  // Fetch all parents data for client-side filtering and sorting
+  const data = await prisma.parent.findMany({
+    include: {
+      students: {
+        select: { id: true, name: true, surname: true },
       },
-      take: ITEM_PER_PAGE,
-      skip: ITEM_PER_PAGE * (p - 1),
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.parent.count({ where: query }),
-  ]);
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  // We fetch the complete dataset for client-side operations
+  // The pagination will happen on the client side
+
+  // Fetch all students for the parent form
+  const students = await prisma.student.findMany({
+    select: {
+      id: true,
+      name: true,
+      surname: true,
+      username: true,
+    },
+  });
 
   return (
     <div className="flex-1 m-4 mt-0">
       <ParentListClientWrapper
         initialData={data as ParentList[]}
-        userRole={role}
+        userRole={role || undefined}
+        students={students as any[]}
       />
     </div>
   );

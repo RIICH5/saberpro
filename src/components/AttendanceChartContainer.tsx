@@ -1,4 +1,3 @@
-import Image from "next/image";
 import AttendanceChart from "./AttendanceChart";
 import prisma from "@/lib/prisma";
 
@@ -7,14 +6,20 @@ const AttendanceChartContainer = async () => {
   const dayOfWeek = today.getDay();
   const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
+  // Set lastMonday to this week's Monday at 00:00:00
   const lastMonday = new Date(today);
-
   lastMonday.setDate(today.getDate() - daysSinceMonday);
+  lastMonday.setHours(0, 0, 0, 0);
+
+  // Set endOfToday to today at 23:59:59
+  const endOfToday = new Date(today);
+  endOfToday.setHours(23, 59, 59, 999);
 
   const resData = await prisma.attendance.findMany({
     where: {
       date: {
         gte: lastMonday,
+        lte: endOfToday,
       },
     },
     select: {
@@ -22,8 +27,6 @@ const AttendanceChartContainer = async () => {
       present: true,
     },
   });
-
-  // console.log(data)
 
   const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
@@ -60,7 +63,7 @@ const AttendanceChartContainer = async () => {
   return (
     <div className="bg-white rounded-lg p-4 h-full shadow-sm">
       <div className="flex justify-between items-center">
-        <h1 className="text-lg font-semibold">Asistencia</h1>
+        <h1 className="text-lg font-semibold">Asistencia esta semana</h1>
       </div>
       <AttendanceChart data={data} />
     </div>

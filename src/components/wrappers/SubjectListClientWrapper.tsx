@@ -1,84 +1,71 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import {
-  Eye,
-  X,
-  UserRound,
-  SlidersHorizontal,
-  ArrowDownUp,
-} from "lucide-react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { SlidersHorizontal, ArrowDownUp, X, Eye } from "lucide-react";
 import Pagination from "../Pagination";
 import Table from "../Table";
 import TableSearch from "../TableSearch";
 import FormContainerClient from "../FormContainer";
 
-type StudentType = {
+// Define types
+type TeacherType = {
   id: string;
   name: string;
-  surname?: string;
-  username?: string;
+  email?: string;
+  username: string;
 };
 
-type ParentType = {
-  id: string;
+type SubjectType = {
+  id: number;
   name: string;
-  surname: string;
-  email: string;
-  phone: string;
-  address: string;
-  img?: string;
-  students: StudentType[];
+  teachers: TeacherType[];
 };
 
-interface ParentListClientWrapperProps {
-  initialData: ParentType[];
+interface SubjectListClientWrapperProps {
+  initialData: SubjectType[];
   userRole?: string;
-  students?: StudentType[];
+  count: number;
+  teachers: TeacherType[];
 }
 
-const ParentListClientWrapper = ({
+const SubjectListClientWrapper = ({
   initialData,
   userRole,
-  students = [],
-}: ParentListClientWrapperProps) => {
-  const [data, setData] = useState<ParentType[]>(initialData);
-  const [filteredData, setFilteredData] = useState<ParentType[]>(initialData);
+  count,
+  teachers,
+}: SubjectListClientWrapperProps) => {
+  // State
+  const [data, setData] = useState<SubjectType[]>(initialData);
+  const [filteredData, setFilteredData] = useState<SubjectType[]>(initialData);
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState<{
-    key: keyof ParentType | null;
+    key: keyof SubjectType | null;
     direction: "asc" | "desc";
   }>({ key: null, direction: "asc" });
   const [showFilters, setShowFilters] = useState(false);
   const ITEMS_PER_PAGE = 10;
 
+  // Define columns
   const columns = [
-    { header: "Información", accessor: "info" },
     {
-      header: "Estudiantes",
-      accessor: "students",
+      header: "Nombre",
+      accessor: "name",
+      sortable: true,
+    },
+    {
+      header: "Maestros",
+      accessor: "teachers",
       className: "hidden md:table-cell",
     },
-    { header: "Correo", accessor: "email", className: "hidden md:table-cell" },
     {
-      header: "Teléfono",
-      accessor: "phone",
-      className: "hidden lg:table-cell",
+      header: "Acciones",
+      accessor: "action",
     },
-    {
-      header: "Dirección",
-      accessor: "address",
-      className: "hidden lg:table-cell",
-    },
-    ...(userRole === "admin"
-      ? [{ header: "Acciones", accessor: "action" }]
-      : []),
   ];
 
   // Sort function
-  const requestSort = (key: keyof ParentType) => {
+  const requestSort = (key: keyof SubjectType) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
@@ -97,17 +84,14 @@ const ParentListClientWrapper = ({
     setShowFilters(!showFilters);
   };
 
-  // Search and sort
+  // Filter and sort data
   useEffect(() => {
     let result = [...data];
 
     // Apply search filter
     if (searchQuery) {
-      result = result.filter(
-        (item) =>
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      result = result.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -126,6 +110,7 @@ const ParentListClientWrapper = ({
     setFilteredData(result);
   }, [data, searchQuery, sortConfig]);
 
+  // Calculate pagination
   const paginatedData = filteredData.slice(
     (page - 1) * ITEMS_PER_PAGE,
     page * ITEMS_PER_PAGE
@@ -137,68 +122,51 @@ const ParentListClientWrapper = ({
     setSortConfig({ key: null, direction: "asc" });
   };
 
-  const refreshData = useCallback(() => {
+  // Refresh data after operations
+  const refreshData = () => {
     setData(initialData);
     setFilteredData(initialData);
     setPage(1);
-  }, [initialData]);
+  };
 
+  // Effect to set initial data
   useEffect(() => {
     setData(initialData);
     setFilteredData(initialData);
   }, [initialData]);
 
-  const renderRow = (item: ParentType) => (
+  // Render table row
+  const renderRow = (item: SubjectType) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-50 transition-colors duration-200"
     >
-      <td className="flex items-center gap-4 p-4">
-        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
-          {item.img ? (
-            <img
-              src={item.img}
-              alt={item.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <UserRound size={24} className="text-gray-500" />
+      <td className="p-4">{item.name}</td>
+      <td className="hidden md:table-cell">
+        {item.teachers.map((teacher) => teacher.name).join(", ")}
+      </td>
+      <td>
+        <div className="flex items-center gap-2">
+          {userRole === "admin" && (
+            <>
+              <FormContainerClient
+                table="subject"
+                type="update"
+                data={item}
+                relatedData={{ teachers }}
+                onComplete={refreshData}
+              />
+              <FormContainerClient
+                table="subject"
+                type="delete"
+                id={item.id}
+                relatedData={{ teachers }}
+                onComplete={refreshData}
+              />
+            </>
           )}
         </div>
-        <div className="flex flex-col">
-          <h3 className="font-semibold">
-            {item.name} {item.surname}
-          </h3>
-          <p className="text-xs text-gray-500">{item.email}</p>
-        </div>
       </td>
-      <td className="hidden md:table-cell">
-        {item.students.map((s) => `${s.name} ${s.surname ?? ""}`).join(", ")}
-      </td>
-      <td className="hidden md:table-cell">{item.email}</td>
-      <td className="hidden lg:table-cell">{item.phone}</td>
-      <td className="hidden lg:table-cell">{item.address}</td>
-      {userRole === "admin" && (
-        <td>
-          <div className="flex items-center gap-2">
-            <FormContainerClient
-              table="parent"
-              type="update"
-              data={item}
-              userRole={userRole}
-              relatedData={{ students }}
-              onComplete={refreshData}
-            />
-            <FormContainerClient
-              table="parent"
-              type="delete"
-              id={item.id}
-              userRole={userRole}
-              onComplete={refreshData}
-            />
-          </div>
-        </td>
-      )}
     </tr>
   );
 
@@ -207,7 +175,7 @@ const ParentListClientWrapper = ({
       {/* TOP */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="hidden md:block text-lg font-semibold text-gray-800">
-          Todos los Padres
+          Todas las Asignaturas
         </h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch onSearch={handleSearch} initialQuery={searchQuery} />
@@ -242,10 +210,10 @@ const ParentListClientWrapper = ({
             </button>
             {userRole === "admin" && (
               <FormContainerClient
-                table="parent"
+                table="subject"
                 type="create"
                 userRole={userRole}
-                relatedData={{ students }}
+                relatedData={{ teachers }}
                 onComplete={refreshData}
               />
             )}
@@ -259,21 +227,22 @@ const ParentListClientWrapper = ({
           <div className="bg-gray-50 px-4 py-3 flex justify-between items-center">
             <h3 className="text-sm font-medium text-gray-800 flex items-center gap-2">
               <SlidersHorizontal size={14} />
-              Filtros activos
+              Filtros Activos
             </h3>
             <button
               onClick={clearFilters}
               className="text-xs px-3 py-1 rounded-md bg-white border border-gray-200 text-gray-500 hover:bg-gray-100 transition-colors duration-200 flex items-center gap-1"
             >
               <X size={12} />
-              Limpiar filtros
+              Limpiar Filtros
             </button>
           </div>
 
           <div className="bg-white p-4">
+            {/* Add filter options here if needed */}
             <p className="text-sm text-gray-500">
               {searchQuery
-                ? `Búsqueda: "${searchQuery}"`
+                ? `Buscar: "${searchQuery}"`
                 : "No hay filtros activos"}
             </p>
           </div>
@@ -300,4 +269,4 @@ const ParentListClientWrapper = ({
   );
 };
 
-export default ParentListClientWrapper;
+export default SubjectListClientWrapper;
